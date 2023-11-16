@@ -1,5 +1,4 @@
 *.root
-test*
 input_files
 output_files
 compile_commands.json
