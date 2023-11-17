@@ -1,3 +1,4 @@
+#include <random>
 #include "SignalExtractor.h"
 #include <fmt/core.h>
 #include <TH1.h>
@@ -41,13 +42,17 @@ auto SignalExtractor::extract(const TH1D& fg, const TH1D& bg) const -> std::pair
     const auto bg_integral = bg.Integral(bin_range[0], bin_range[1]);
     const auto scale = fg_integral / bg_integral * m_scaling;
 
+    static auto gen = std::mt19937{};
+    auto dist = std::uniform_int_distribution<int>(0, 1000); 
+    const auto id = dist(gen);
+
     auto scaled_bg = bg * scale;
     scaled_bg.SetDirectory(nullptr);
-    scaled_bg.SetName("scaled_bg");
+    scaled_bg.SetName(fmt::format("signal_{}", id).c_str());
 
     auto signal = fg - scaled_bg;
     signal.SetDirectory(nullptr);
-    signal.SetName("signal");
+    signal.SetName(fmt::format("scaled_bg_{}", id).c_str());
 
     return {signal, scaled_bg};
 }
