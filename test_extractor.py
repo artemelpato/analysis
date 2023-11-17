@@ -3,22 +3,28 @@ import ROOT
 ROOT.gInterpreter.Declare('#include "include/SignalExtractor.h"')
 ROOT.gSystem.Load("build/libSignalExtractor.so")
 
-s = ROOT.SignalExtractor(1.0, [0.7, 0.8])
+s = ROOT.SignalExtractor(1.0, [0.65, 0.8])
+pt_range = [1.0, 1.5]
+cent_range = [60, 88]
+histname = "r_3_eta_spectrum_pbsc_hist"
+input_file = "input_files/19005_combined.root"
 
 print(s.scaling())
 print(s.scale_range())
 
-file = ROOT.TFile("input_files/18724_combined.root", "read");
+file = ROOT.TFile(input_file, "read");
 
-fg = file.Get("eta_spectrum_pbsc_hist_FG11")
+fg = file.Get(f"{histname}_FG11")
 fg = fg.ProjectionX("fg",
-    fg.GetYaxis().FindBin(4.0), fg.GetYaxis().FindBin(5.0) - 1,
-    fg.GetZaxis().FindBin(0), fg.GetZaxis().FindBin(88) - 1)
+    fg.GetYaxis().FindBin(pt_range[0]), fg.GetYaxis().FindBin(pt_range[1]) - 1,
+    fg.GetZaxis().FindBin(cent_range[0]), fg.GetZaxis().FindBin(cent_range[1]) - 1)
 
-bg = file.Get("eta_spectrum_pbsc_hist_BG11")
+bg = file.Get(f"{histname}_BG11")
 bg = bg.ProjectionX("bg",
-    bg.GetYaxis().FindBin(4.0), bg.GetYaxis().FindBin(5.0) - 1,
-    bg.GetZaxis().FindBin(0), bg.GetZaxis().FindBin(88) - 1)
+    bg.GetYaxis().FindBin(pt_range[0]), bg.GetYaxis().FindBin(pt_range[1]) - 1,
+    bg.GetZaxis().FindBin(cent_range[0]), bg.GetZaxis().FindBin(cent_range[1]) - 1)
+
+for h in [fg, bg]: h.Sumw2()
 
 signal, scaled_bg = s.extract(fg, bg)
 signal.SetName("signal")
