@@ -3,10 +3,10 @@ import ROOT
 ROOT.gInterpreter.Declare('#include "include/SignalExtractor.h"')
 ROOT.gSystem.Load("build/libSignalExtractor.so")
 
-s = ROOT.SignalExtractor(1.0, [0.65, 0.8])
+s = ROOT.SignalExtractor(0.98, [0.3, 0.4])
 pt_range = [1.0, 1.5]
 cent_range = [60, 88]
-histname = "r_3_eta_spectrum_pbsc_hist"
+histname = "eta_spectrum_pbsc_hist"
 input_file = "input_files/19005_combined.root"
 
 print(s.scaling())
