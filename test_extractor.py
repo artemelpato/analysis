@@ -1,16 +1,18 @@
+#!/bin/python3
+
 import ROOT 
 
 ROOT.gInterpreter.Declare('#include "include/SignalExtractor.h"')
 ROOT.gSystem.Load("build/libSignalExtractor.so")
 
-s = ROOT.SignalExtractor(0.98, [0.3, 0.4])
+s = ROOT.SignalExtractor(0.98, [0.7, 0.8])
 pt_range = [1.0, 1.5]
 cent_range = [60, 88]
 histname = "eta_spectrum_pbsc_hist"
-input_file = "input_files/19005_combined.root"
+input_file = "input_files/18724_combined.root"
 
-print(s.scaling())
-print(s.scale_range())
+print(s.get_scaling())
+print(s.get_scale_range())
 
 file = ROOT.TFile(input_file, "read");
 
@@ -30,7 +32,7 @@ signal, scaled_bg = s.extract(fg, bg)
 signal.SetName("signal")
 scaled_bg.SetName("scaled_bg");
 
-output = ROOT.TFile("test_extractor_output.root", "recreate");
+output = ROOT.TFile("18724_output.root", "recreate");
 output.WriteTObject(fg);
 output.WriteTObject(bg);
 output.WriteTObject(signal);

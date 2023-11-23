@@ -14,11 +14,11 @@ public:
     SignalExtractor(const double scaling, const Range scale_range);
     ~SignalExtractor();
 
-    auto scaling() const -> double;
-    auto scale_range() const -> Range;
+    auto set_scaling(const double value);
+    auto set_scale_range(const Range value);
 
-    auto scaling() -> double&;
-    auto scale_range() -> Range&;
+    auto get_scaling() const -> double;
+    auto get_scale_range() const -> Range;
 
     auto extract(const TH1D& fg, const TH1D& bg) const -> std::pair<TH1D, TH1D>;
 

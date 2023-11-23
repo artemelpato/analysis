@@ -17,19 +17,19 @@ SignalExtractor::~SignalExtractor() {
     fmt::print("SignalExtractor destroyed at {}\n", (void*) this);
 }
 
-auto SignalExtractor::scaling() const -> double {
+auto SignalExtractor::get_scaling() const -> double {
     return m_scaling;
 }
-auto SignalExtractor::scale_range() const -> Range {
+auto SignalExtractor::get_scale_range() const -> Range {
     return m_scale_range;
 }
 
-auto SignalExtractor::scaling() -> double& { 
-    return m_scaling;
+auto SignalExtractor::set_scaling(const double value) {
+    m_scaling = value;
 }
 
-auto SignalExtractor::scale_range() -> Range& {
-    return m_scale_range;
+auto SignalExtractor::set_scale_range(const Range value) {
+    m_scale_range = value;
 }
 
 auto SignalExtractor::extract(const TH1D& fg, const TH1D& bg) const -> std::pair<TH1D, TH1D> {
