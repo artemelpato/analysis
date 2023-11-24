@@ -7,8 +7,8 @@ SignalExtractor::SignalExtractor() {
     fmt::print("SignalExtractor created at {}\n", (void*) this);
 }
 
-SignalExtractor::SignalExtractor(const double scaling, const Range scale_range) :
-     m_scale_range{scale_range}, m_scaling{scaling}
+SignalExtractor::SignalExtractor(const double scaling, const Range scale_range, const Range aux_scale_range) :
+     m_scale_range{scale_range}, m_aux_scale_range{aux_scale_range}, m_scaling{scaling}
 {
     fmt::print("SignalExtractor created at {}\n", (void*) this);
 }
@@ -20,16 +20,17 @@ SignalExtractor::~SignalExtractor() {
 auto SignalExtractor::get_scaling() const -> double {
     return m_scaling;
 }
-auto SignalExtractor::get_scale_range() const -> Range {
-    return m_scale_range;
+auto SignalExtractor::get_scale_ranges() const -> std::vector<Range> {
+    return {m_scale_range, m_aux_scale_range};
 }
 
 auto SignalExtractor::set_scaling(const double value) {
     m_scaling = value;
 }
 
-auto SignalExtractor::set_scale_range(const Range value) {
+auto SignalExtractor::set_scale_ranges(const Range value, const Range aux_value) {
     m_scale_range = value;
+    m_aux_scale_range = aux_value;
 }
 
 auto SignalExtractor::extract(const TH1D& fg, const TH1D& bg) const -> std::pair<TH1D, TH1D> {
@@ -38,8 +39,16 @@ auto SignalExtractor::extract(const TH1D& fg, const TH1D& bg) const -> std::pair
         fg.GetXaxis()->FindBin(m_scale_range[1]) - 1
     };
 
-    const auto fg_integral = fg.Integral(bin_range[0], bin_range[1]);
-    const auto bg_integral = bg.Integral(bin_range[0], bin_range[1]);
+    const auto aux_bin_range = std::array<int, 2>{
+        fg.GetXaxis()->FindBin(m_aux_scale_range[0]), 
+        fg.GetXaxis()->FindBin(m_aux_scale_range[1]) - 1
+    };
+
+    const auto fg_integral = 
+        fg.Integral(bin_range[0], bin_range[1]) + fg.Integral(aux_bin_range[0], aux_bin_range[1]);
+    const auto bg_integral = 
+        bg.Integral(bin_range[0], bin_range[1]) + bg.Integral(aux_bin_range[0], aux_bin_range[1]);
+
     const auto scale = fg_integral / bg_integral * m_scaling;
 
     static auto gen = std::mt19937{};
