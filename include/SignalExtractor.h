@@ -14,8 +14,8 @@ public:
     SignalExtractor(const double scaling, const Range scale_range);
     ~SignalExtractor();
 
-    auto set_scaling(const double value);
-    auto set_scale_range(const Range value);
+    auto set_scaling(const double value) -> void;
+    auto set_scale_range(const Range value) -> void;
 
     auto get_scaling() const -> double;
     auto get_scale_range() const -> Range;

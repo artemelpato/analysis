@@ -24,11 +24,11 @@ auto SignalExtractor::get_scale_range() const -> Range {
     return m_scale_range;
 }
 
-auto SignalExtractor::set_scaling(const double value) {
+auto SignalExtractor::set_scaling(const double value) -> void {
     m_scaling = value;
 }
 
-auto SignalExtractor::set_scale_range(const Range value) {
+auto SignalExtractor::set_scale_range(const Range value) -> void {
     m_scale_range = value;
 }
 
