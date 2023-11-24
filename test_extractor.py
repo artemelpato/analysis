@@ -5,11 +5,11 @@ import ROOT
 ROOT.gInterpreter.Declare('#include "include/SignalExtractor.h"')
 ROOT.gSystem.Load("build/libSignalExtractor.so")
 
-s = ROOT.SignalExtractor(0.98, [0.7, 0.8])
+s = ROOT.SignalExtractor(0.965, [0.3, 0.4])
 pt_range = [1.0, 1.5]
-cent_range = [60, 88]
-histname = "eta_spectrum_pbsc_hist"
-input_file = "input_files/18724_combined.root"
+cent_range = [0, 88]
+histname = "sigma_cut_eta_spectrum_pbsc_hist"
+input_file = "input_files/19018_combined_sigma_cut.root"
 
 print(s.get_scaling())
 print(s.get_scale_range())
@@ -32,7 +32,7 @@ signal, scaled_bg = s.extract(fg, bg)
 signal.SetName("signal")
 scaled_bg.SetName("scaled_bg");
 
-output = ROOT.TFile("18724_output.root", "recreate");
+output = ROOT.TFile("19018_sigma_output.root", "recreate");
 output.WriteTObject(fg);
 output.WriteTObject(bg);
 output.WriteTObject(signal);
