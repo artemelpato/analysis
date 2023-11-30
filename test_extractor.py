@@ -5,14 +5,10 @@ import ROOT
 ROOT.gInterpreter.Declare('#include "include/SignalExtractor.h"')
 ROOT.gSystem.Load("build/libSignalExtractor.so")
 
-s = ROOT.SignalExtractor(0.965, [0.3, 0.4])
-pt_range = [1.0, 1.5]
+pt_range = [1.5, 2.0]
 cent_range = [0, 88]
-histname = "sigma_cut_eta_spectrum_pbsc_hist"
-input_file = "input_files/19018_combined_sigma_cut.root"
-
-print(s.get_scaling())
-print(s.get_scale_range())
+histname = "r_3_eta_spectrum_pbsc_hist"
+input_file = "input_files/19018_combined.root"
 
 file = ROOT.TFile(input_file, "read");
 
@@ -26,15 +22,15 @@ bg = bg.ProjectionX("bg",
     bg.GetYaxis().FindBin(pt_range[0]), bg.GetYaxis().FindBin(pt_range[1]) - 1,
     bg.GetZaxis().FindBin(cent_range[0]), bg.GetZaxis().FindBin(cent_range[1]) - 1)
 
-for h in [fg, bg]: h.Sumw2()
+for h in [fg, bg]:
+    h.Sumw2()
 
-signal, scaled_bg = s.extract(fg, bg)
-signal.SetName("signal")
-scaled_bg.SetName("scaled_bg");
-
-output = ROOT.TFile("19018_sigma_output.root", "recreate");
-output.WriteTObject(fg);
-output.WriteTObject(bg);
-output.WriteTObject(signal);
-output.WriteTObject(scaled_bg);
-
+test_scalings = [0.9 + 0.01 * i for i in range(11)]
+output = ROOT.TFile("output.root", "recreate")
+for scaling in test_scalings:
+    s = ROOT.SignalExtractor(scaling, [0.3, 0.4])
+    print(f"Computing for scaling {scaling:.2f}")
+    peak, scaled_bg = s.extract(fg, bg);
+    peak.SetName(f"peak_scaling_{scaling:.2f}")
+    peak.Rebin(5)
+    output.WriteTObject(peak)
