@@ -10,11 +10,11 @@ SignalExtractor::SignalExtractor() {
 SignalExtractor::SignalExtractor(const double scaling, const Range scale_range) :
      m_scale_range{scale_range}, m_scaling{scaling}
 {
-    fmt::print("SignalExtractor created at {}\n", (void*) this);
+    //fmt::print("SignalExtractor created at {}\n", (void*) this);
 }
 
 SignalExtractor::~SignalExtractor() { 
-    fmt::print("SignalExtractor destroyed at {}\n", (void*) this);
+    //fmt::print("SignalExtractor destroyed at {}\n", (void*) this);
 }
 
 auto SignalExtractor::get_scaling() const -> double {
